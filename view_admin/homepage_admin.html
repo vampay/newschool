@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+
+  <title>API Page</title>
+  <link rel="stylesheet" href="/css/index.css">
+  <link rel="stylesheet" href="/css/navber.css">
+</head>
+<!-- <style>
+  .activity-card {
+      max-width: 300px;
+      margin: 15px;
+  }
+  .card-content {
+      padding: 15px;
+  }
+  .card-header {
+      background-color: #008b56;
+      color: white;
+      padding: 10px;
+  }
+  .card-body {
+      background-color: #F1F1F1;
+      padding: 10px;
+  }
+  .card-body p {
+      margin: 0;
+      line-height: 1.6;
+  }
+  .find-product {
+      text-align: right;
+      margin-top: 10px;
+  }
+  .footer {
+      background-color: #ffa600; /* สีเดียวกับ navbar */
+      color: white;
+      text-align: center;
+      padding: 10px;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+  }
+  .full-width-image {
+      width: 100%;
+      height: auto; /* Ensure the aspect ratio is maintained */
+  }
+</style> -->
+<body>
+
+  <!-- Navbar -->
+  <div class="w3-bar navbar-logo navbar-yellow">
+    <!-- Logo on the left -->
+    <div class="w3-bar-item">
+      <a href="/homepage_admin">
+        <img src="/img/tsu.png" alt="Logo">
+      </a>
+    </div>
+
+    <!-- Right buttons -->
+    <div class="w3-bar-item navbar-buttons">
+      <a href="/homepage_admin" class="w3-button w3-red w3-round-large">กิจกรรมแนะแนวทั้งหมด</a>
+      <a href="/InFormAdmin" class="w3-button w3-white w3-border w3-round-large">เพิ่มข้อมูลการไปแนะแนว</a>
+      <a href="/" class="w3-button w3-white w3-border w3-round-large">ออกจากระบบ</a>
+    </div>
+  </div>
+
+
+  <!-- Main Content -->
+  <div class="container">
+    <div class="table-responsive">
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">โรงเรียน</th>
+            <th scope="col">วันที่</th>
+            <th scope="col">ช่วงเวลา</th>
+            <th scope="col">จำนวนผู้เข้าร่วม</th>
+            <th scope="col">ชื่อครูผู้ติดต่อ</th>
+            <th scope="col">เบอร์ครูผู้ติดต่อ</th>
+            <th scope="col">ที่ตั้งโรงเรียน</th>
+            <th scope="col">ผู้ประสานงาน</th>
+            <th scope="col">จำนวนผู้เข้าร่วม</th>
+            <th scope="col">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="mytableUser">
+          <!-- Data will be inserted here by JavaScript -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      fetch('/api/school')
+        .then(response => response.json())
+        .then(data => {
+          const tableBody = document.getElementById('mytableUser');
+          tableBody.innerHTML = ''; // Clear existing content
+
+          data.forEach(row => {
+            const tr = document.createElement('tr');
+
+            tr.innerHTML = `
+                          <td>${row.school_name}</td>
+                          <td>${new Date(row.date).toLocaleDateString()}</td>
+                          <td>${row.startTime} - ${row.endTime}</td>
+                          <td>${row.student_count}</td>
+                          <td>${row.teacher_name}</td>
+                          <td>${row.phone_teacher}</td>
+                          <td>${row.location}</td>
+                          <td>${row.faculty}</td>
+                          <td>${row.count_participants}</td>
+                          <td>
+                            <div class="d-flex justify-content-start gap-2">
+                              <a href="/edit-infoAdmin?id=${row._id}" class="btn btn-primary">แก้ไข</a>
+                              <button class="btn btn-danger" onclick="deleteRow('${row._id}')">ลบ</button>
+                            </div>
+                          </td>
+                      `;
+            tableBody.appendChild(tr);
+          });
+        })
+        .catch(error => console.error('Error fetching data:', error));
+    });
+
+    function deleteRow(id) {
+      if (confirm('คุณแน่ใจว่าต้องการลบข้อมูลนี้?')) {
+        fetch(`/api/school/${id}`, {
+            method: 'DELETE',
+          })
+          .then(response => response.json())
+          .then(data => {
+            console.log('Delete response:', data); // Log the response to debug
+
+            if (data.success) {
+              alert('ข้อมูลถูกลบเรียบร้อยแล้ว');
+              location.reload(); // Reload the page to refresh the table
+            } else {
+              alert('ไม่สามารถลบข้อมูลได้: ' + (data.message || 'ไม่ทราบรายละเอียด'));
+            }
+          })
+          .catch(error => {
+            console.error('Error deleting data:', error);
+            alert('เกิดข้อผิดพลาดในการลบข้อมูล');
+          });
+      }
+    }
+  </script>
+</body>
+<!-- Footer -->
+<div class="footer">
+  <p>© 2024 All rights reserved</p>
+</div>
+</html>

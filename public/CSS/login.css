@@ -1,0 +1,109 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+}
+
+/* Navbar */
+.navbar {
+    background-color: #0097a7;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.navbar a {
+    color: white;
+    padding: 12px 20px;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.navbar .login-btn {
+    background-color: #555;
+    border-radius: 20px;
+    color: white;
+    padding: 10px 20px;
+}
+
+.navbar .signup-btn {
+    background-color: red;
+    border-radius: 20px;
+    color: white;
+    padding: 10px 20px;
+}
+
+/* Login form */
+.login-container {
+    width: 100%;
+    max-width: 400px;
+    background-color: white;
+    padding: 40px;
+    margin: 50px auto;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+.login-container h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.login-container label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.login-container input[type="email"],
+.login-container input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.login-container .submit-btn {
+    width: 100%;
+    padding: 12px;
+    background-color: red;
+    color: white;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 20px;
+}
+
+.login-container .submit-btn:hover {
+    background-color: darkred;
+}
+
+.login-container p {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.login-container a {
+    color: red;
+    text-decoration: none;
+}
+
+.login-container a:hover {
+    text-decoration: underline;
+}
+.footer {
+    background-color: #ffa600; /* สีเดียวกับ navbar */
+    color: white;
+    text-align: center;
+    padding: 10px;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+.full-width-image {
+    width: 100%;
+    height: auto; /* Ensure the aspect ratio is maintained */
+}

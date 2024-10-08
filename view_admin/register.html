@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up Page</title>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="/css/navber.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .navbar {
+            background-color: #0097a7;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar a {
+            color: white;
+            padding: 12px 20px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 400px;
+            background-color: white;
+            padding: 40px;
+            margin: 50px auto;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        .login-container h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .login-container label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .login-container input[type="email"],
+        .login-container input[type="password"],
+        .login-container input[type="text"],
+        .login-container select {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .login-container .submit-btn {
+            width: 100%;
+            padding: 12px;
+            background-color: red;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+        }
+
+        .login-container .submit-btn:hover {
+            background-color: darkred;
+        }
+
+        .login-container p {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .login-container a {
+            color: red;
+            text-decoration: none;
+        }
+
+        .login-container a:hover {
+            text-decoration: underline;
+        }
+
+        .remember-container {
+            margin: 10px 0;
+        }
+
+        .remember-container input[type="checkbox"] {
+            margin-right: 5px;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 10px;
+            background-color: #f4f4f4;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <div class="w3-bar navbar-logo">
+        <div class="w3-bar-item">
+            <a href="/homepage_admin">
+                <img src="/img/tsu.png" alt="Logo">
+            </a>
+        </div>
+
+        <div class="w3-bar-item navbar-buttons">
+            <a href="/login" class="w3-button w3-red w3-round-large">เข้าสู่ระบบ</a>
+            <a href="/register" class="w3-button w3-white w3-border w3-round-large">สมัครสมาชิก</a>
+        </div>
+    </div>
+
+    <!-- Sign Up form -->
+    <div class="login-container">
+        <h2>SIGN UP</h2>
+        <form id="signup-form" novalidate>
+            <label for="email">EMAIL</label>
+            <input type="email" id="email" name="email" placeholder="Enter your email" required
+                aria-label="Email Address" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$">
+
+            <label for="password">PASSWORD</label>
+            <input type="password" id="password" name="password" placeholder="Enter your password" required
+                aria-label="Password" minlength="6">
+
+            <label for="name">NAME</label>
+            <input type="text" id="name" name="name" placeholder="Enter your name" required aria-label="First Name">
+
+            <label for="surname">SURNAME</label>
+            <input type="text" id="surname" name="surname" placeholder="Enter your surname" required
+                aria-label="Surname">
+
+            <label for="major">MAJOR</label>
+            <input type="text" id="major" name="major" placeholder="Enter your major" required aria-label="Major">
+
+            <div class="remember-container">
+                <input type="checkbox" id="remember" name="remember" aria-label="Remember Me">
+                <label for="remember">REMEMBER ME</label>
+            </div>
+
+            <button type="submit" class="submit-btn">SIGN UP</button>
+        </form>
+        <p id="responseMessage"></p>
+
+
+        <p>NEED AN ACCOUNT? <a href="/login">LOG IN</a></p>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <p>© 2024 All rights reserved</p>
+    </div>
+
+    <script>
+        document.getElementById('signup-form').addEventListener('submit', async function (e) {
+            e.preventDefault(); // Prevent form submission from reloading the page
+
+            // Get the form values
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const name = document.getElementById('name').value;
+            const surname = document.getElementById('surname').value;
+            const major = document.getElementById('major').value;
+
+
+
+            if (!email || !password || !name || !surname || !major) {
+                document.getElementById('responseMessage').innerText = 'กรุณากรอกข้อมูลให้ครบถ้วน';
+                return;
+            }
+
+            const formData = {
+                email: email,
+                password: password,
+                name: name,
+                surname: surname,
+                major: major,
+
+            };
+
+            fetch('/api/auth/user/register', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(formData),
+})
+.then(response => response.text()) // ใช้ .text() แทน .json()
+.then(data => {
+    if (data.includes('สำเร็จ')) { // ตรวจสอบว่าข้อความมีคำว่า "สำเร็จ"
+        document.getElementById('responseMessage').innerText = 'สมัครสมาชิกสำเร็จ';
+        document.getElementById('signup-form').reset();
+    } else {
+        // ถ้าไม่ใช่ข้อความที่คาดหวัง
+        document.getElementById('responseMessage').innerText = 'กรอกข้อมูลไม่สำเร็จ: ' + data;
+    }
+})
+.catch(error => {
+    document.getElementById('responseMessage').innerText = 'เกิดข้อผิดพลาดในการส่งข้อมูล';
+    console.error('Error:', error);
+});
+
+
+
+
+        });
+    </script>
+</body>
+
+</html>

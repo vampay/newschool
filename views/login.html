@@ -1,0 +1,112 @@
+<!-- <!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="/css/navber.css">
+    <link rel="stylesheet" href="/css/login.css">
+    <style>
+        .error-message {
+            color: red;
+            font-size: 0.9em;
+        }
+
+        .success-message {
+            color: green;
+            font-size: 1em;
+        }
+
+        .loading {
+            display: none;
+            color: blue;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <div class="w3-bar navbar-logo">
+        <div class="w3-bar-item">
+            <a href="/homepage_admin">
+                <img src="/img/tsu.png" alt="Logo">
+            </a>
+        </div>
+        <div class="w3-bar-item navbar-buttons">
+            <a href="/login" class="w3-button w3-red w3-round-large">เข้าสู่ระบบ</a>
+            <a href="/register" class="w3-button w3-white w3-border w3-round-large">สมัครสมาชิก</a>
+        </div>
+    </div>
+
+    <!-- Login form -->
+    <div class="login-container">
+        <h2>LOGIN</h2>
+        <form id="login-form">
+            <label for="email">EMAIL</label>
+            <input type="email" id="email" name="email" placeholder="Enter your email" required aria-label="Email">
+
+            <label for="password">PASSWORD</label>
+            <input type="password" id="password" name="password" placeholder="Enter your password" required aria-label="Password">
+
+            <label for="role">ROLE</label>
+            <select id="role" name="role" required>
+                <option value="user">User</option>
+                <option value="admin">Admin</option>
+            </select>
+            
+            <input type="hidden" id="userType" name="userType" value="user">
+
+            <button type="submit" id="submit" class="submit-btn">LOGIN</button>
+            <p id="loading-message" class="loading">Logging in...</p>
+            <p id="response-message" class="error-message" role="alert"></p>
+        </form>
+        <p>ALREADY HAVE AN ACCOUNT? <a href="/register">SIGN UP</a></p>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <p>© 2024 All rights reserved</p>
+    </div>
+
+    <script>
+        document.getElementById('login-form').addEventListener('submit', async function (e) {
+            e.preventDefault();
+            const loadingMessage = document.getElementById('loading-message');
+            loadingMessage.style.display = 'block'; // Show loading message
+            document.getElementById('response-message').textContent = ''; // Clear previous messages
+
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                const response = await fetch('/api/auth/user/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await response.json();
+
+                loadingMessage.style.display = 'none'; // Hide loading message
+
+                if (response.ok) {
+                    window.location.href = '/homepage';
+                } else {
+                    document.getElementById('response-message').textContent = data.message || 'Login failed';
+                }
+            } catch (error) {
+                loadingMessage.style.display = 'none';
+                console.error('Login error:', error);
+                document.getElementById('response-message').textContent = 'An error occurred. Please try again later.';
+            }
+        });
+    </script>
+    
+</body>
+
+</html> -->

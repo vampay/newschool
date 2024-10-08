@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Information</title>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="/css/navber.css">
+    <link rel="stylesheet" href="/css/admin.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+
+</head>
+
+<body>
+    <!-- Navbar -->
+    <div class="w3-bar navbar-logo d-flex justify-content-between align-items-center p-3 navbar-yellow shadow-sm">
+        <!-- Logo on the left -->
+        <div class="w3-bar-item">
+            <a href="/homepage_admin">
+                <img src="/img/tsu.png" alt="Logo">
+            </a>
+        </div>
+
+        <!-- Right buttons -->
+        <div class="w3-bar-item navbar-buttons">
+            <a href="/homepage_admin" class="w3-button w3-red w3-round-large">กิจกรรมแนะแนวทั้งหมด</a>
+            <a href="/InFormAdmin" class="w3-button w3-white w3-border w3-round-large">เพิ่มข้อมูลการไปแนะแนว</a>
+            <a href="/" class="w3-button w3-white w3-border w3-round-large">ออกจากระบบ</a>
+        </div>
+    </div>
+
+    <div class="w3-container w3-card w3-round-large">
+        <div class="form-box">
+            <h2>แก้ไขข้อมูล</h2>
+            <form id="editForm">
+                <div class="form-group">
+                    <label for="school_name">โรงเรียน:</label>
+                    <input type="text" id="school_name" name="school_name" required>
+                </div>
+                <div class="form-group">
+                    <label for="date">วันที่เข้าแนะแนว:</label>
+                    <input type="Date" id="date" name="date" required>
+                </div>
+                <div class="form-group">
+                    <label for="startTime">ช่วงเวลาเริ่มต้น:</label>
+                    <input type="time" id="startTime" name="startTime" required>
+                </div>
+                <div class="form-group">
+                    <label for="endTime">ช่วงเวลาสิ้นสุด:</label>
+                    <input type="time" id="endTime" name="endTime" required>
+                </div>
+                <div class="form-group">
+                    <label for="location">สถานที่:</label>
+                    <input type="text" id="location" name="location" required>
+                </div>
+                <div class="form-group">
+                    <label for="student_count">จำนวนนักเรียน:</label>
+                    <input type="number" id="student_count" name="student_count" required>
+                </div>
+                <div class="form-group">
+                    <label for="teacher_name">ชื่อครูผู้ติดต่อ:</label>
+                    <input type="text" id="teacher_name" name="teacher_name" required>
+                </div>
+                <div class="form-group">
+                    <label for="phone_teacher">เบอร์โทรครู:</label>
+                    <input type="tel" id="phone_teacher" name="phone_teacher" required>
+                </div>
+                <div class="form-group">
+                    <label for="faculty">ผู้ประสานงาน:</label>
+                    <input type="text" id="faculty" name="faculty" required>
+                </div>
+                <div class="form-group">
+                    <label for="count_participants">จำนวนผู้เข้าร่วม:</label>
+                    <input type="number" id="count_participants" name="count_participants" required>
+                </div>
+                <div class="form-group">
+                    <button type="submit">บันทึกการเปลี่ยนแปลง</button>
+                </div>
+            </form>
+            <p id="responseMessage"></p>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // Get the ID from the URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const id = urlParams.get('id'); // Assume id is the parameter name for identifying the item
+
+        if (!id) {
+            document.getElementById('responseMessage').innerText = 'ID ไม่ได้ถูกส่งมา';
+            return;
+        }
+
+        fetch(`/api/school/${id}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data) {
+                    const date = new Date(data.date);
+                    const formattedDate = date.toISOString().split('T')[0];
+
+                    document.getElementById('school_name').value = data.school_name || '';
+                    document.getElementById('date').value = formattedDate || '';
+                    document.getElementById('startTime').value = data.startTime || '';
+                    document.getElementById('endTime').value = data.endTime || '';
+                    document.getElementById('location').value = data.location || '';
+                    document.getElementById('student_count').value = data.student_count || 0;
+                    document.getElementById('teacher_name').value = data.teacher_name || '';
+                    document.getElementById('phone_teacher').value = data.phone_teacher || '';
+                    document.getElementById('faculty').value = data.faculty || '';
+                    document.getElementById('count_participants').value = data.count_participants || 0;
+                } else {
+                    document.getElementById('responseMessage').innerText = 'ไม่พบข้อมูล';
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+                document.getElementById('responseMessage').innerText =
+                    'เกิดข้อผิดพลาดในการดึงข้อมูล';
+            });
+
+        document.getElementById('editForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            const formData = {
+                school_name: document.getElementById('school_name').value,
+                date: document.getElementById('date').value,
+                startTime: document.getElementById('startTime').value,
+                endTime: document.getElementById('endTime').value,
+                location: document.getElementById('location').value,
+                student_count: document.getElementById('student_count').value,
+                teacher_name: document.getElementById('teacher_name').value,
+                phone_teacher: document.getElementById('phone_teacher').value,
+                faculty: document.getElementById('faculty').value,
+                count_participants: document.getElementById('count_participants').value
+            };
+
+            fetch(`/api/school/${id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Response from server:', data);
+                    if (data.success) {
+                        document.getElementById('responseMessage').innerText =
+                            'ข้อมูลถูกอัปเดตเรียบร้อยแล้ว';
+                    } else {
+                        const errorMessage = data.message || 'ไม่ทราบรายละเอียด';
+                        document.getElementById('responseMessage').innerText =
+                            `ไม่สามารถอัปเดตข้อมูลได้: ${errorMessage}`;
+                    }
+                })
+                .catch(error => {
+                    document.getElementById('responseMessage').innerText =
+                        'เกิดข้อผิดพลาดในการอัปเดตข้อมูล';
+                    console.error('Error:', error);
+                });
+
+        });
+
+    });
+</script>
+
+
+        </div>
+    </div>
+
+</body>
+<!-- Footer -->
+<div class="footer">
+    <p>© 2024 All rights reserved</p>
+  </div>
+</html>

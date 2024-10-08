@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- W3.CSS -->
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+  <!-- Custom CSS -->
+  <link href="/css/index.css" rel="stylesheet">
+  <link rel="stylesheet" href="/css/navber.css">
+  <link rel="stylesheet" href="/css/viwe_inf_user.css">
+  <title>กิจกรรมที่เข้าร่วมแล้ว</title>
+</head>
+
+<body>
+
+  <!-- Navbar -->
+  <div class="w3-bar navbar-logo">
+    <!-- Logo on the left -->
+    <div class="w3-bar-item">
+      <a href="/homepage">
+        <img src="/img/tsu.png" alt="Logo">
+      </a>
+    </div>
+
+    <!-- Right buttons -->
+    <div class="w3-bar-item navbar-buttons">
+      <a href="/APIPage" class="w3-button w3-red w3-round-large">ประวัติของผู้ใช้งาน</a>
+      <a href="/APIPage_show" class="w3-button w3-white w3-border w3-round-large">กิจกรรมที่ได้ลงไปแล้ว</a>
+      <a href="/homepage" class="w3-button w3-white w3-border w3-round-large">กิจกรรมแนะแนวที่ลงได้</a>
+      <a href="/" class="w3-button w3-white w3-border w3-round-large">ออกจากระบบ</a>
+    </div>
+  </div>
+
+  <div class="container mt-4">
+    <div class="profile">
+      <h2>ข้อมูลส่วนตัว</h2>
+      <ul>
+        <li><strong>ชื่อ:</strong> <span id="profile-name"></span></li>
+        <li><strong>นามสกุล:</strong> <span id="profile-surname"></span></li>
+        <li><strong>หลักสูตร:</strong> <span id="profile-major"></span></li>
+      </ul>
+      <div id="responseMessage" class="text-danger"></div>
+    </div>
+
+    <div class="activities mt-4">
+      <h2>กิจกรรมที่สมัคร</h2>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>โรงเรียน</th>
+            <th>วันที่เข้าแนะแนว</th>
+            <th>ช่วงเวลา</th>
+            <th>จำนวนนักเรียน</th>
+            <th>ที่ตั้งโรงเรียน</th>
+          </tr>
+        </thead>
+        <tbody id="school-table">
+          <!-- Data will be inserted here by JavaScript -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Fetch and populate profile data
+      fetch('/api/auth')
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json(); // Assuming JSON response
+        })
+         // Assuming JSON response
+        .then(data => {
+          if (data) {
+            document.getElementById('profile-name').innerHTML = data.name;
+            document.getElementById('profile-surname').innerHTML = data.surname;
+            document.getElementById('profile-major').innerHTML = data.major;
+          } else {
+            document.getElementById('responseMessage').innerText = 'ไม่พบข้อมูล';
+          }
+        })
+        .catch(error => {
+          console.error('Error fetching data:', error);
+          document.getElementById('responseMessage').innerText =
+            'เกิดข้อผิดพลาดในการดึงข้อมูล';
+        });
+      // Fetch and populate activities data
+      fetch('/api/school')
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json(); // Assuming JSON response
+        })
+        .then(data => {
+          const schoolTable = document.getElementById('school-table');
+          schoolTable.innerHTML = ''; // Clear existing content
+          data.forEach((activity, index) => {
+            const row = `
+              <tr>
+                <td>${index + 1}</td>
+                <td>${activity.schoolName}</td>
+                <td>${activity.date}</td>
+                <td>${activity.time}</td>
+                <td>${activity.studentCount}</td>
+                <td>${activity.schoolLocation}</td>
+              </tr>
+            `;
+            schoolTable.innerHTML += row;
+          });
+        })
+        .catch(error => console.error('Error fetching activities data:', error));
+    });
+  </script>
+
+</body>
+
+</html>

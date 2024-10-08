@@ -1,0 +1,37 @@
+
+/* Custom styles for navbar */
+.navbar-logo {
+    display: flex;
+    align-items: center;
+    background-color: orange;
+    padding: 10px;
+}
+
+.navbar-logo img {
+    height: 50px;
+    margin-right: 20px;
+}
+
+.navbar-buttons {
+    margin-left: auto; /* Push the buttons to the right */
+    display: flex;
+    align-items: center;
+}
+
+.navbar-buttons a,
+.navbar-buttons button {
+    margin-left: 10px;
+}
+.footer {
+    background-color: #ffa600; /* สีเดียวกับ navbar */
+    color: white;
+    text-align: center;
+    padding: 10px;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+.full-width-image {
+    width: 100%;
+    height: auto; /* Ensure the aspect ratio is maintained */
+}

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Information</title>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="/css/navber.css">
+    <link rel="stylesheet" href="/css/admin.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+</head>
+
+<body>
+    <!-- Navbar -->
+    <div class="w3-bar navbar-logo d-flex justify-content-between align-items-center p-3 navbar-yellow shadow-sm">
+        <div class="w3-bar-item">
+            <a href="/homepage_admin">
+                <img src="/img/tsu.png" alt="Logo">
+            </a>
+        </div>
+        <div class="w3-bar-item navbar-buttons">
+            <a href="/Homepage" class="w3-button w3-red w3-round-large">กิจกรรมแนะนำที่ลงได้</a>
+            <a href="/" class="w3-button w3-white w3-border w3-round-large">ออกจากระบบ</a>
+        </div>
+    </div>
+
+    <div class="w3-container w3-card w3-round-large">
+        <div class="form-box">
+            <h2>เพิ่มข้อมูลผู้เข้าร่วม</h2>
+            <form id="participateForm">
+                <div class="form-group">
+                    <label for="name">ชื่อ:</label>
+                    <input type="text" id="name" name="name" placeholder="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="surname">นามสกุล:</label>
+                    <input type="text" id="surname" name="surname" placeholder="surname" required>
+                </div>
+                <div class="form-group">
+                    <label for="major">หลักสูตร:</label>
+                    <input type="text" id="major" name="major" placeholder="major" required>
+                </div>
+                <div class="form-group">
+                    <label for="Boarding_point">จุดขึ้นรถ:</label>
+                    <input type="text" id="Boarding_point" name="Boarding_point" placeholder="Boarding_point" required>
+                </div>
+                <div class="form-group">
+                    <button type="submit">Submit</button>
+                </div>
+            </form>
+
+            <p id="responseMessage"></p>
+
+            <script>
+                document.addEventListener('DOMContentLoaded', () => {
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const id = urlParams.get('id');
+
+                    if (!id) {
+                        document.getElementById('responseMessage').innerText = 'ID ไม่ได้ถูกส่งมา';
+                        return;
+                    }
+
+                    document.getElementById('participateForm').addEventListener('submit', function (event) {
+                        event.preventDefault();
+
+                        const formData = {
+                            name: document.getElementById('name').value,
+                            surname: document.getElementById('surname').value,
+                            major: document.getElementById('major').value,
+                            Boarding_point: document.getElementById('Boarding_point').value,
+                        };
+
+                        fetch('/api/participate', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify(formData),
+                            })
+                            .then(response => {
+                                if (response.ok) {
+                                    return response.json();
+                                } else {
+                                    throw new Error('ไม่สามารถบันทึกข้อมูลได้');
+                                }
+                            })
+                            .then(data => {
+                                document.getElementById('responseMessage').innerText =
+                                    'ข้อมูลถูกบันทึกเรียบร้อยแล้ว';
+
+                                // ดึง ID ที่บันทึกไว้หรือสร้างใหม่ถ้าไม่มี
+                                const savedIds = JSON.parse(localStorage.getItem('savedIds')) || [];
+
+                                // เพิ่ม ID ใหม่เข้าไปใน Array
+                                if (!savedIds.includes(id)) {
+                                    savedIds.push(id);
+                                    localStorage.setItem('savedIds', JSON.stringify(
+                                    savedIds)); // บันทึกกลับไปที่ localStorage
+                                }
+
+                                setTimeout(() => {
+                                    window.location.href =
+                                    '/homepage'; // เปลี่ยนหน้าไปยัง homepage หลังจาก 2 วินาที
+                                }, 1000);
+                            })
+
+                            .catch(error => {
+                                document.getElementById('responseMessage').innerText =
+                                    'เกิดข้อผิดพลาด: ' + error.message;
+                            });
+                    });
+                });
+            </script>
+
+        </div>
+    </div>
+</body>
+
+<!-- Footer -->
+<div class="footer">
+    <p>© 2024 All rights reserved</p>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+</html>

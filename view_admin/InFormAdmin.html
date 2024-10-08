@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Information Form</title>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="/css/navber.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            /* Adjust height to fill viewport */
+        }
+
+        .w3-container {
+            width: 50%;
+            margin: auto;
+            /* Center horizontally */
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-box {
+            background-color: #f0f0f0;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 5px solid #0097a7;
+        }
+
+        .form-box input[type="text"],
+        .form-box input[type="Date"],
+        .form-box input[type="time"],
+        .form-box input[type="number"],
+        .form-box input[type="tel"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .form-box button {
+            padding: 10px 20px;
+            background-color: #0097a7;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .form-box button:hover {
+            background-color: #007b8a;
+        }
+
+        @media (max-width: 768px) {
+            .w3-container {
+                width: 90%;
+            }
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <div class="w3-bar navbar-logo">
+        <!-- Logo on the left -->
+        <div class="w3-bar-item">
+            <a href="/homepage_admin">
+                <img src="/img/tsu.png" alt="Logo">
+            </a>
+        </div>
+
+        <!-- Right buttons -->
+        <div class="w3-bar-item navbar-buttons">
+            <a href="/homepage_admin" class="w3-button w3-white w3-border w3-round-large">กิจกรรมแนะแนวทั้งหมด</a>
+            <a href="/InFormAdmin" class="w3-button w3-red w3-round-large">เพิ่มข้อมูลการไปแนะแนว</a>
+            <a href="/" class="w3-button w3-white w3-border w3-round-large">ออกจากระบบ</a>
+        </div>
+    </div>
+
+    <!-- Full-width Main container -->
+    <div class="w3-container w3-card w3-round-large">
+        <div class="form-box">
+            <h3>เพิ่มข้อมูลโรงเรียนที่แนะแนว</h3>
+            <form id="schoolForm">
+                <input type="text" id="school_name" name="school_name" placeholder="School Name" required>
+                <input type="Date" id="date" name="date" required>
+                <input type="time" id="startTime" name="startTime" required>
+                <input type="time" id="endTime" name="endTime" required>
+                <input type="text" id="location" name="location" placeholder="Location" required>
+                <input type="number" id="student_count" name="student_count" placeholder="Student Count" required>
+                <input type="text" id="teacher_name" name="teacher_name" placeholder="Teacher Name" required>
+                <input type="tel" id="phone_teacher" name="phone_teacher" placeholder="Phone Number" required>
+                <input type="text" id="faculty" name="faculty" placeholder="Faculty" required>
+                <input type="number" id="count_participants" name="count_participants" placeholder="count_participants"
+                    required>
+                <button type="submit">Submit</button>
+            </form>
+            <p id="responseMessage"></p>
+
+            <script>
+                document.getElementById('schoolForm').addEventListener('submit', function (event) {
+                    event.preventDefault(); // Prevent form from submitting the traditional way
+
+                    // Validate form data
+                    const date = document.getElementById('date').value;
+                    const startTime = document.getElementById('startTime').value;
+                    const endTime = document.getElementById('endTime').value;
+                    const schoolName = document.getElementById('school_name').value;
+                    const location = document.getElementById('location').value;
+                    const studentCount = parseInt(document.getElementById('student_count').value, 10);
+                    const teacherName = document.getElementById('teacher_name').value;
+                    const phoneTeacher = document.getElementById('phone_teacher').value;
+                    const faculty = document.getElementById('faculty').value;
+                    const count_participants = parseInt(document.getElementById('count_participants').value,
+                    10);
+
+                    if (!date || !startTime || !endTime || !schoolName || !location || isNaN(studentCount) || !
+                        teacherName || !phoneTeacher || !faculty || isNaN(count_participants)) {
+                        document.getElementById('responseMessage').innerText = 'กรุณากรอกข้อมูลให้ครบถ้วน';
+                        return;
+                    }
+
+                    const formData = {
+                        date,
+                        startTime,
+                        endTime,
+                        school_name: schoolName,
+                        location,
+                        student_count: studentCount,
+                        teacher_name: teacherName,
+                        phone_teacher: phoneTeacher,
+                        faculty,
+                        count_participants,
+                    };
+
+                    fetch('/api/school/', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify(formData),
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                document.getElementById('responseMessage').innerText =
+                                    'กรอกข้อมูลเรียบร้อยแล้ว';
+                                setTimeout(() => {
+                                    window.location.href ='/homepage_admin'; 
+                                }, 1000); //เมื่อกรอกข้อมูลเสร็จให้ไปยังหน้า /homepage_admin ภายใน1วิ
+                            } else {
+                                document.getElementById('responseMessage').innerText =
+                                    'กรอกข้อมูลไม่สำเร็จ: ' + (data.message || 'ไม่ทราบรายละเอียด');
+                            }
+                        })
+                        .catch(error => {
+                            document.getElementById('responseMessage').innerText =
+                                'เกิดข้อผิดพลาดในการส่งข้อมูล';
+                            console.error('Error:', error);
+                        });
+                });
+            </script>
+            <script src="/controller/SchoolController.js"></script>
+        </div>
+    </div>
+</body>
+<!-- Footer -->
+<div class="footer">
+    <p>© 2024 All rights reserved</p>
+</div>
+
+</html>

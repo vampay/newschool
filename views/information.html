@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Information Form</title>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="/css/navber.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        /* Container for the form and image */
+        .w3-container {
+            max-width: 900px;
+            margin: 30px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Form box */
+        .form-box {
+            background-color: #f0f0f0;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 5px solid #0097a7;
+        }
+
+        .form-box label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .form-box input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .form-box button {
+            padding: 10px 20px;
+            background-color: #0097a7;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .form-box button:hover {
+            background-color: #007b8a;
+        }
+
+        /* Placeholder image */
+        .image-box {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .image-box img {
+            max-width: 100%;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+        }
+
+        .image-box p {
+            font-weight: bold;
+            color: #0097a7;
+        }
+
+        .image-box p span {
+            display: block;
+            color: black;
+            font-weight: normal;
+        }
+        .footer {
+      background-color: #ffa600; /* สีเดียวกับ navbar */
+      color: white;
+      text-align: center;
+      padding: 10px;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+  }
+  .full-width-image {
+      width: 100%;
+      height: auto; /* Ensure the aspect ratio is maintained */
+  }
+    </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<div class="w3-bar navbar-logo">
+    <!-- Logo on the left -->
+    <div class="w3-bar-item">
+        <a href="/homepage">
+            <img src="/img/tsu.png" alt="Logo">
+        </a>
+        <!-- <a href="/HomepageAdmin" class="w3-button w3-white w3-border w3-round-large">แอดมิน</a> -->
+    </div>
+    
+
+    <!-- Right buttons -->
+    <div class="w3-bar-item navbar-buttons">
+        <a href="/homepage" class="w3-button w3-red w3-round-large">กิจกรรมแนะนำที่ลงได้</a>
+        <a href="/" class="w3-button w3-white w3-border w3-round-large">ออกจากระบบ</a>
+    </div>
+</div>
+
+    <!-- Full-width Main container -->
+    <div class="w3-container w3-card w3-round-large">
+        <div class="form-box">
+            <h3>กรอกข้อมูล</h3>
+            <form id="participateForm">
+                <input type="text" id="name" name="name" placeholder="name" required>
+                <input type="text" id="surname" name="surname" placeholder="surname" required>
+                <input type="text" id="major" name="major" placeholder="major" required>
+                <input type="text" id="Boarding_point" name="Boarding_point" placeholder="Boarding_point" required>
+                <button type="submit">Submit</button>
+            </form>
+            <p id="responseMessage"></p>
+
+            <script>
+                document.getElementById('participateForm').addEventListener('submit', function(event) {
+                    event.preventDefault(); // Prevent form from submitting the traditional way
+
+                    // Validate form data
+                    const name = document.getElementById('name').value;
+                    const surname = document.getElementById('surname').value;
+                    const major = document.getElementById('major').value;
+                    const Boarding_point = document.getElementById('Boarding_point').value;
+                    
+
+                    if (!name || !surname || !major|| !Boarding_point ) {
+                        document.getElementById('responseMessage').innerText = 'กรุณากรอกข้อมูลให้ครบถ้วน';
+                        return;
+                    }
+
+                    const formData = {
+                        name,
+                        surname,
+                        major,
+                        Boarding_point,
+                    };
+
+                    fetch('/api/participate/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(formData),
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            document.getElementById('responseMessage').innerText = 'กรอกข้อมูลเรียบร้อยแล้ว';
+                            document.getElementById('participateForm').reset(); // Optionally clear the form
+                        } else {
+                            document.getElementById('responseMessage').innerText = 'กรอกข้อมูลไม่สำเร็จ: ' + (data.message || 'ไม่ทราบรายละเอียด');
+                        }
+                    })
+                    .catch(error => {
+                        document.getElementById('responseMessage').innerText = 'เกิดข้อผิดพลาดในการส่งข้อมูล';
+                        console.error('Error:', error);
+                    });
+                });
+            </script>
+            <script src="/controller/participateController.js"></script>
+        </div>
+    </div>
+
+</body>
+<!-- Footer -->
+<div class="footer">
+    <p>© 2024 All rights reserved</p>
+  </div>
+</html>
